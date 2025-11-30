@@ -2,7 +2,7 @@
 layout: single
 title: "스프링 검증 정리, RedirectAttribute 정리"
 categories: [mvc2]
-tags: [mvc2, TIL]
+tags: [mvc2]
 toc: true
 author_profile: true
 ---

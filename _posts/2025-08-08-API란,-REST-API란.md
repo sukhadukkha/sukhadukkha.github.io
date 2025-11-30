@@ -2,7 +2,7 @@
 layout: single
 title: "API란, REST API란"
 categories: [major]
-tags: [major, TIL]
+tags: [major]
 toc: true
 author_profile: true
 ---

@@ -2,7 +2,7 @@
 layout: single
 title: "Map,Stack,Queue"
 categories: [java]
-tags: [java, TIL]
+tags: [java]
 toc: true
 author_profile: true
 ---

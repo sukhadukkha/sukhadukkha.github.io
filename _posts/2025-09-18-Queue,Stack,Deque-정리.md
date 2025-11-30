@@ -2,7 +2,7 @@
 layout: single
 title: "Queue,Stack,Deque 정리"
 categories: [java]
-tags: [java, TIL]
+tags: [java]
 toc: true
 author_profile: true
 ---
