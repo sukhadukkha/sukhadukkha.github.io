@@ -9,7 +9,7 @@ Backend Developer(Java, Spring Boot), DevOps(Docker, AWS, github Actions, k8s)ые
 
 ## Skills
 - Backend: Java, Spring Boot
-- DevOps: Docker, AWS, GitHub Actions, Kubernetes
+- DevOps: Study scheduled as soon as possible
 
 ## Contact
 - GitHub: [sukhadukkha](https://github.com/sukhadukkha)
