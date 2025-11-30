@@ -5,8 +5,6 @@ categories: [major]
 tags: [major, TIL]
 toc: true
 author_profile: true
-sidebar:
-  nav: "docs"
 ---
 
 # [웹개발] API 설계부터 실생활 예시까지, REST API 완벽 정복

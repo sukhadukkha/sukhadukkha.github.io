@@ -5,8 +5,6 @@ categories: [mvc2]
 tags: [mvc2, TIL]
 toc: true
 author_profile: true
-sidebar:
-  nav: "docs"
 ---
 
 # ☕ Spring 공부 기록

@@ -5,8 +5,6 @@ categories: [java]
 tags: [java, TIL]
 toc: true
 author_profile: true
-sidebar:
-  nav: "docs"
 ---
 
 # 자바에서 Queue / Stack / Deque 정리

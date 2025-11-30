@@ -5,8 +5,7 @@ categories: [java]
 tags: [java, TIL]
 toc: true
 author_profile: true
-sidebar:
-  nav: "docs"
+
 ---
 
 # ☕ Java 공부 기록
