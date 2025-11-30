@@ -56,7 +56,7 @@ plugins:
 author:
   name   : "Jiho Park"
   avatar : "https://github.com/sukhadukkha.png"
-  bio    : "Backend Developer(Java, Spring Boot), DevOps(Docker, AWS, github Actions, k8s)를 학습 중입니다."
+  bio    : "Backend(Java, Spring Boot), DevOps(Docker, AWS, github Actions, k8s)의 학습 기록."
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
