@@ -1,8 +1,8 @@
 ---
 layout: single
 title: "API란, REST API란"
-categories: [major]
-tags: [major]
+categories: [spring]
+tags: [spring]
 toc: true
 author_profile: true
 ---
@@ -99,7 +99,4 @@ REST API를 이야기할 때 절대 빼놓을 수 없는 개념이 바로 **무�
 ## 마치며
 
 오늘은 API의 기본 개념부터 우리가 매일 사용하는 서비스 속 API 예시, 그리고 웹 개발의 표준인 REST API와 그 핵심 특징인 무상태성까지 알아보았습니다.
-
 API는 이제 웹과 모바일 서비스를 만드는 데 없어서는 안 될 핵심 요소입니다. 오늘 정리해 드린 내용이 여러분의 개발 여정에 훌륭한 나침반이 되기를 바랍니다.
-
-궁금한 점이 있다면 언제든지 댓글로 질문해 주세요!
