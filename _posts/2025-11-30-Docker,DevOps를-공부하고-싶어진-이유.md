@@ -7,7 +7,7 @@ toc: true
 author_profile: true
 ---
 
-# Docker를 공부하고 싶어진 이유 + DevOps까지 !
+# Docker를 공부하고 싶어진 이유 + Cloud + DevOps까지 !
 
 ## 개요
 저는 이번 3학년 2학기에 앱을 개발하는 수업의 팀장을 맡아 처음 팀 프로젝트를 수행하게 되었습니다. <br>
