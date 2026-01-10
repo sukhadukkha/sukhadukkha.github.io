@@ -309,6 +309,42 @@ spec:
   - `aws eks create-addon --cluster-name 내클러스터이름 --addon-name aws-efs-csi-driver`
 - Helm 차트 방식
 
+## 내용 추가(LoadBalancer와 비용)
+
+- **LoadBalancer를 서비스마다 만들면 비용이 점점 더 커지게 된다.**
+- **이를 해결하기 위해 Nginx(Ingress Controller) 하나만 로드밸런서로 띄우고, 나머지는 ClusterIP로 내부 통신하는 방법을 사용한다.**
+  - Ingress Controller 설치
+  - Service의 kind를 Ingeress로 설정
+  - Ingress yaml 파일 생성
+  - 예시 파일
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /users
+        pathType: Prefix
+        backend:
+          service:
+            name: users-service
+            port:
+              number: 80
+      - path: /auth
+        pathType: Prefix
+        backend:
+          service:
+            name: auth-service
+            port:
+              number: 3000
+```
+- 스프링이나 노드 서버가 뜰 때까지 시간이 걸릴 수 있기 때문에, livenessProbe나 readinessProbe 설정을 추가한다면, 서비스가 준비되지 않은 파드로 트래픽을 보내는 에러를 방지할 수 있다.
+
+---
 
 ## Kubernetes에서 포트 충돌이 안나는 이유
 
