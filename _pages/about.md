@@ -5,9 +5,10 @@ permalink: /about/
 author_profile: true
 ---
 
-Backend Developer(Java, Spring Boot), DevOps(Docker, AWS, github Actions, k8s)를 학습 중입니다.
+Cloud Engineer(Docker, AWS, K8s)되기 위해 공부하기, Backend Developer(Java, Spring Boot)
 
 ## Skills
+- Cloud: AWS, Docker, K8s, Terraform
 - Backend: Java, Spring Boot
 - DevOps: Study scheduled as soon as possible
 
