@@ -113,7 +113,7 @@ spec:
 - 그 후, AWS EKS에 들어가서 클러스터를 생성한다.
 - EKS 서비스에 대한 role을 만들고, 그 서비스에 권한을 부여한다.
   - IAM(Identity and Access Management)역할 생성
-  - **EKS는 사용자를 대신해서 다른 AWS 자원(EC2, LoadBalancer 등)을 관리해야한다. 이를 위해 EKS 서비스 자체가 AWS 자원에 접근할 수 있도록 허용하는 IAM Role을 만들어서 EKS에게 부여해야한다.
+  - **EKS는 사용자를 대신해서 다른 AWS 자원(EC2, LoadBalancer 등)을 관리해야한다. 이를 위해 EKS 서비스 자체가 AWS 자원에 접근할 수 있도록 허용하는 IAM Role을 만들어서 EKS에게 부여해야한다.**
 - 클러스터를 위한 네트워크를 구성한다.
   - 강의에서는 CloudFormation을 통해 강의 템플릿으로 VPC를 구성하고 설정했다.(이름: eksVpc)
 - 이렇게 클러스터를 생성했다.
