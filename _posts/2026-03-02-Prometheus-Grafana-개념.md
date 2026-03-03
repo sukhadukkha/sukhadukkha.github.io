@@ -269,3 +269,12 @@ node_cpu_seconds_total{cpu="1", instance="node-exporter:9100", job="node-exporte
   - 실행되는 컨테이너가 부하를 받으면 VM에 할당된 자원을 사용한다.
   - node-exporter 컨테이너가 메트릭을 생성 + 노출하고 Prometheus 컨테이너가 메트릭을 주기적으로 요청(http://node-exporter:9100/metrics)하고 Pull 해와서 저장한다.
 
+
+## 실습 화면
+
+![실습화면](/assets/images/GrafanaDashBoard.png)
+![실습화면](/assets/images/GrafanaImportDashboard.png)
+
+- CPU 4개에 부하를 주는 컨테이너 실행
+- Docker Desktop VM의 CPU limit = 10으로 설정되어있음 (Docker Desktop -> Setting -> Resources에서 확인 가능)
+- 4개에 부하를 주기때문에 4/10 -> 40까지 사용률 올라가는 것 확인 가능
