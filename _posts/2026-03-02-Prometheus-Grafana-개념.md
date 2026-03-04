@@ -234,7 +234,7 @@ node_cpu_seconds_total{cpu="1", instance="node-exporter:9100", job="node-exporte
 ```
 
 - CPU 사용률 늘리고 다시 확인해보기
-  - docker run --rm -it alpine sh -c "apk add --no-cache stress-ng && stress-ng --cpu 4"
+  - docker run --rm -it alpine sh -c "apk add --no-cache stress-ng && stress-ng --cp u 4"
   - stress-ng 이미지 사용해서 부하 줘보기
 - Grafana를 통해 그래프로 확인해보기
   - Code 모드로 100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[10s])) * 100) 쿼리 날려보기
