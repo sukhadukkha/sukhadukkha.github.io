@@ -442,7 +442,7 @@ StatefulSet + Headless Service -> 항상 같이 동작한다.
 
 
 - 동작 흐름
-1. 내부 통로 만들기(Service-ClusterIP): 가장 먼저 Pod들을 묶어 클러스터 내부에서만 통하는 주소를 만든다.
+- 1.내부 통로 만들기(Service-ClusterIP): 가장 먼저 Pod들을 묶어 클러스터 내부에서만 통하는 주소를 만든다.
 
 ```yaml
 apiVersion: v1
@@ -458,7 +458,7 @@ spec:
       port: 80      # 서비스가 노출할 포트
       targetPort: 8080 # 실제 컨테이너(Spring Boot 등)가 떠 있는 포트
 ```
-2. 외부 입구 만들기(Ingress): 위에서 만든 api-service를 외부 도메인과 연결해준다.
+- 2.외부 입구 만들기(Ingress): 위에서 만든 api-service를 외부 도메인과 연결해준다.
 
 ```yaml
 apiVersion: networking.k8s.io/v1
