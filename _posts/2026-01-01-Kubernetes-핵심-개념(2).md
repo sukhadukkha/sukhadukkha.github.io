@@ -65,6 +65,8 @@ spec:          # Deployment가 Pod를 어떻게 다룰지 정의
 - service 객체는 pod를 클러스터나 외부 세계에 노출하는 역할
 - service.yaml 파일 추가
   - 이 애플리케이션 배포를 위한 service 정의 
+
+
 ```yaml
 apiVersion: v1
 kind: Service
@@ -99,6 +101,8 @@ spec:
 ## 다중 vs 단일 config 파일
 
 - master-deployment.yaml 파일 생성
+
+
 ```yaml
 apiVersion: v1
 kind: Service
@@ -149,6 +153,8 @@ spec:
 
 - matchExpression(보통은 matchLabels 사용)
   - 더 많은 구성 옵션을 가진 항목을 선택하는 방법
+
+
 ```yaml
 spec: 
   replicas: 1
