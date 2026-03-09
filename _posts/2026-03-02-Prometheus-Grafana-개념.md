@@ -11,6 +11,8 @@ author_profile: true
 ## Prometheus & Grafana의 기본 개념
 
 - `Prometheus`
+  - 서버와 애플리케이션의 상태를 수집하고 모니터링하는 오픈소스
+  - Metrics를 수집한다.
   - CPU 활용률
   - 남은 메모리
   - API 요청
