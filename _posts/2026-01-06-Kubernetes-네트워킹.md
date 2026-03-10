@@ -71,11 +71,14 @@ spec:
 
 - users-app.js 수정
 - 도커 컴포즈는 서비스 이름으로 자동 연결해주지만, 쿠버네티스에서는 서비스(Service)라는 객체를 통해 통신해야 하며, 이 서비스의 이름을 환경 변수로 주입해주는 것이 MSA의 표준 패턴이기 때문에 수정해야한다.
+
+
 ```
 const hashedPW = await axios.get('http://auth/hashed-password/' + password);
 const hashedPW = await axios.get(`http://${process.env.AUTH_ADDRESS}/hashed-password/` + password);
 
 ```
+
 ```
 const response = await axios.get(
     `http://${process.env.AUTH_ADDRESS}/token/` + hashedPassword + '/' + password
@@ -85,6 +88,7 @@ const response = await axios.get(
     `http://${process.env.AUTH_ADDRESS}/token/` + hashedPassword + '/' + password
   );
 ```
+
 - 변경 후 users-api 폴더에서 이미지 재 빌드 및 다시 푸쉬
 - **docker compose 파일 수정(Docker compose로 실행 시, http://auth/hashed-password/...)**
 
@@ -169,6 +173,7 @@ spec:
         - name: auth
           image: sukhadukkha/kub-demo-auth:latest
 ```
+
 - **Kubernetes로 싱행 시 (http://localhost/hashed-password/...)**
 - kubectl apply로 이 파일 재 적용
 - kubectl get pods를 통해 users-deployment-5c9f6d4ccd-cg6tf   2/2     Running       0          16s 이렇게 컨테이너 2개 실행되는것 확인 가능
@@ -289,7 +294,8 @@ spec:
   );
 ```
 
-- 이렇게 변경 후, docker compose에서도 사용할 수 있게 하기 위해 
+- 이렇게 변경 후, docker compose에서도 사용할 수 있게 하기 위해
+
 ```yaml
 environment:
       AUTH_ADDRESS: auth
@@ -403,6 +409,7 @@ spec:
 - frontend 폴더의 이미지를 빌드하고, docker run -p 80:80 --rm -d sukhadukkha/kub-demo-frontend를 실행하고 localhost에 접속해본다. (쿠버네티스 사용 X)
 - 브라우저 검사에서 CORS 에러 발생하는 것을 확인할 수 있다.
   - 해결하기 위해 tasks-app.js에 코드 추가
+
 ```
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -424,6 +431,8 @@ app.use((req, res, next) => {
 - minikube service frontend-service로 실행 및 접속
 
 - `지금은 frontend와 task가 소스코드에 주소를 하드코딩해서 통신하고있다.`
+
+
 ```
 fetch('http://127.0.0.1:51759/tasks' ...)
 ```
@@ -432,6 +441,7 @@ fetch('http://127.0.0.1:51759/tasks' ...)
 
 - **리버스 프록시: 클라이언트와 백엔드 서버 사이에서 Nginx 등 리버스 프록시에게 요청을 보내면 프록시가 이를 가로채서 적절한 서버로 전달하고 응답을 대신 받아주는 구조**
 - nginx.conf 파일에 내용 추가
+
 ```
 server {
   listen 80;
@@ -453,6 +463,8 @@ server {
 ```
 
 - frontend의 app.js 파일 변경
+
+
 ```
  fetch('http://127.0.0.1:51759/tasks ... 
  fetch('/api/tasks  ... # 이렇게 변경
