@@ -76,7 +76,6 @@ spec:
 ```
 const hashedPW = await axios.get('http://auth/hashed-password/' + password);
 const hashedPW = await axios.get(`http://${process.env.AUTH_ADDRESS}/hashed-password/` + password);
-
 ```
 
 ```

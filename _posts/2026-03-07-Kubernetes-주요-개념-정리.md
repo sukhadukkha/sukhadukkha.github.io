@@ -587,3 +587,101 @@ spec:
             cpu: "1000m"     # 이 수치를 넘지 못하도록 제한함 (Throttling)
 ```
 
+
+## Kubernetes 통신 흐름
+
+- 각 기능 별로 Deployment 나누고, 그에 맞는 Service 생성
+
+```
+user-deployment
+   └ user pods (3개)
+        ↓
+   user-service
+
+order-deployment
+   └ order pods (3개)
+        ↓
+   order-service
+
+payment-deployment
+   └ payment pods (3개)
+        ↓
+   payment-service
+```
+
+- Ingress 생성 / 예시 
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress
+spec:
+  rules:
+  - host: api.myapp.com
+    http:
+      paths:
+      - path: /users
+        pathType: Prefix
+        backend:
+          service:
+            name: user-service
+            port:
+              number: 80
+
+      - path: /orders
+        pathType: Prefix
+        backend:
+          service:
+            name: order-service
+            port:
+              number: 80
+
+      - path: /payments
+        pathType: Prefix
+        backend:
+          service:
+            name: payment-service
+            port:
+              number: 80
+```
+
+- 트래픽 흐름
+
+```
+Client
+  |
+  v
+Ingress
+  |
+  v
+order-service
+  |
+  v
+order Pod들
+```
+
+- 클라우드 환경에서는? 
+
+```
+Client
+   |
+   v
+Route53 (DNS) (Alias record)
+   |
+   v
+AWS ALB
+   |
+   v
+Ingress rule
+   |
+   v
+Service
+   |
+   v
+Pods
+```
+
+- `Alias Record : 도메인 -> AWS 리소스 연결`
+  - my-app.com → ALB
+  - my-app.com → my-alb-123.ap-northeast-2.elb.amazonaws.com
