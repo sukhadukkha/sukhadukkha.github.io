@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "Prometheus & Grafana 개념 정리 및 실습"
+title:  "Prometheus 연습해보기"
 categories: [Prometheus & Grafana]
 tags: [Prometheus]
 toc: true
