@@ -5,12 +5,13 @@ permalink: /about/
 author_profile: true
 ---
 
-Cloud Engineer(Docker, AWS, K8s)되기 위해 공부하기, Backend Developer(Java, Spring Boot)
+학습한 내용 정리하고 기록하기
 
 ## Skills
 - Cloud: AWS, Docker, K8s, Terraform
 - Backend: Java, Spring Boot
-- DevOps: Study scheduled as soon as possible
+- DevOps: Github Actions
+- Certificate: AWS SAA, SQLD
 
 ## Contact
 - GitHub: [sukhadukkha](https://github.com/sukhadukkha)
