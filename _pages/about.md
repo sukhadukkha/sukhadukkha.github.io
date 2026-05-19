@@ -5,7 +5,7 @@ permalink: /about/
 author_profile: true
 ---
 
-학습한 내용 정리하고 기록하기
+학습한 내용 정리하고 기록하기 / 안정적인 시스템 및 인프라 구성을 목표로
 
 ## Skills
 - Cloud: AWS, Docker, K8s, Terraform
