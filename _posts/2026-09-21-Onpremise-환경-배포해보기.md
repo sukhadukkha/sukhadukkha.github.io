@@ -1007,14 +1007,14 @@ podman compose version
 - 배포 스크립트 실행
   - 각 스크립트 역할
 
-| 파일 | 역할 |
-| --- | --- |
-| [check-mounts.sh](/Users/jihopark/OCI/deploy/onprem/check-mounts.sh) | Unity의 MySQL·미디어 저장 경로가 실제로 마운트됐는지 확인해. 빠져 있으면 배포를 중단해. |
-| [podman-common.sh](/Users/jihopark/OCI/deploy/onprem/podman-common.sh) | 다른 스크립트가 공통으로 쓰는 경로, 사전 확인, Compose 실행 함수를 모아둔 파일이야. |
-| [deploy.sh](/Users/jihopark/OCI/deploy/onprem/deploy.sh) | **첫 배포·코드 업데이트용.** 설정을 검사하고 이미지를 빌드한 뒤 앱을 실행해. |
-| [start.sh](/Users/jihopark/OCI/deploy/onprem/start.sh) | **재부팅 후 시작용.** 기존 이미지를 사용해 앱을 켜며 다시 빌드하지 않아. |
-| [stop.sh](/Users/jihopark/OCI/deploy/onprem/stop.sh) | 앱 컨테이너들을 중지해. |
-| [sweet-story-onprem.service](/Users/jihopark/OCI/deploy/onprem/sweet-story-onprem.service) | systemd에 등록하는 파일이야. 재부팅할 때 `start.sh`, 서비스 중지 때 `stop.sh`를 호출해. |
+| 파일 | 역할                                                               |
+| --- |------------------------------------------------------------------|
+| [check-mounts.sh](/Users/jihopark/OCI/deploy/onprem/check-mounts.sh) | Unity의 MySQL·미디어 저장 경로가 실제로 마운트됐는지 확인. 빠져 있으면 배포를 중단.            |
+| [podman-common.sh](/Users/jihopark/OCI/deploy/onprem/podman-common.sh) | 다른 스크립트가 공통으로 쓰는 경로, 사전 확인, Compose 실행 함수를 모아둔 파일.               |
+| [deploy.sh](/Users/jihopark/OCI/deploy/onprem/deploy.sh) | **첫 배포·코드 업데이트용.** 설정을 검사하고 이미지를 빌드한 뒤 앱을 실행.                    |
+| [start.sh](/Users/jihopark/OCI/deploy/onprem/start.sh) | **재부팅 후 시작용.** 기존 이미지를 사용해 앱을 켜며 다시 빌드하지 않는다.                    |
+| [stop.sh](/Users/jihopark/OCI/deploy/onprem/stop.sh) | 앱 컨테이너들을 중지한다.                                                   |
+| [sweet-story-onprem.service](/Users/jihopark/OCI/deploy/onprem/sweet-story-onprem.service) | systemd에 등록하는 파일이다. 재부팅할 때 `start.sh`, 서비스 중지 때 `stop.sh`를 호출한다. |
 
 
 - deploy.sh 스크립트로 배포 실시
