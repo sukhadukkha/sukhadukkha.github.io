@@ -21,8 +21,8 @@ author_profile: true
                          └────→ MySQL → Docker 볼륨
 
 목표 온프레미스
-브라우저 → VPN → R750의 Nginx → Spring Boot → Unity의 media 폴더
-                                      └────→ MySQL → Unity의 mysql 폴더
+브라우저 → VPN → R750의 Nginx → Spring Boot → 사진 및 영상은 Unity의 NFS File System
+                                      └────→ MySQL → Unity의 Block Storage
 ```
 
 
