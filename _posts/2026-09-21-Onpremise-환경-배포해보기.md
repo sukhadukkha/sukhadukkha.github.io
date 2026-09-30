@@ -120,7 +120,7 @@ Pool0는 SSD 12개를 이용한 RAID 5, 8+1 Stripe Width로 구성되어 있었�
   - `스위치에 꽂혀있는 케이블을 서버의 NIC 포트에 꼽으니 DHCP로 연결완료`
 - MAC 터미널에서 SSH 접속 성공
 - SAN Switch는 Brocade 6505 모델
-- Storage는 Dell Unity (192.168.1.30)
+- Storage는 Dell Unity (192.168.1.xxx)
 
 
 ![SSH 접속](/assets/images/SSHConnection.png)
@@ -144,7 +144,7 @@ lo         loopback  관리되지 않음  --
          
 [root@TK_TEST ~]# ip -br addr
 lo               UNKNOWN        127.0.0.1/8 
-eno8303          UP             192.168.1.232/24 
+eno8303          UP             192.168.1.xxx/24 
 ens7f0np0        DOWN           
 ens7f1np1        DOWN           
 ens7f2np2        DOWN           
@@ -158,9 +158,9 @@ idrac            UNKNOWN        169.254.1.2/24
 virbr0           DOWN           192.168.122.1/24
  
 [root@TK_TEST ~]# ip route
-default via 192.168.1.9 dev eno8303 proto dhcp src 192.168.1.232 metric 101 
+default via 192.168.1.xxx dev eno8303 proto dhcp src 192.168.1.xxx metric 101 
 169.254.1.0/24 dev idrac proto kernel scope link src 169.254.1.2 metric 100 
-192.168.1.0/24 dev eno8303 proto kernel scope link src 192.168.1.232 metric 101 
+192.168.1.0/24 dev eno8303 proto kernel scope link src 192.168.1.xxx metric 101 
 192.168.122.0/24 dev virbr0 proto kernel scope link src 192.168.122.1 linkdown 
 [root@TK_TEST ~]# 
 ```
@@ -168,7 +168,7 @@ default via 192.168.1.9 dev eno8303 proto dhcp src 192.168.1.232 metric 101
 ![서버구조](/assets/images/OnpremServer.png)
 
 - 이는 서버 뒷면 포트들 모습이다.
-- 현재 IP는 DHCP로 192.168.1.232/24 로 할당받있고, Gateway는 192.168.1.9다.
+- 현재 IP는 DHCP로 192.168.1.xxx/24 로 할당받있고, Gateway는 192.168.1.xxx다.
 
 - 현재 Oracle Cloud에 떠있는 웹 서버 아키텍처
   - 이걸 OnPrem에 맞게 코드를 수정한 뒤, 회사 Test Server에 배포해볼 것이다.
@@ -228,84 +228,84 @@ sdc  447.1G ATA      DELLBOSS VD      sata
 ## Step 3. FC 케이블 연결 구조 정리 및 조닝 및 cfg 변경
 
 - 구조
-- SAN 스위치 (192.168.1.34 접속) admin , Password
+- SAN 스위치 (192.168.1.xxx 접속)
 
 ![케이블연결구조](/assets/images/Onprem구조.png)
 
 - 스위치 상태 확인 (포트, 조닝, cfgshow, switchshow)
 
 ```
-OPW_Test_SAN:admin> cfgshow
+TEST_SAN:admin> cfgshow
 Defined configuration:
- cfg:	OPW	NWTEST01_P0_DD9300_P1; NWTEST01_P2_DD9300_P1; zone1; zone2; 
+ cfg:	TEST_CFG	EXISTING_ZONE_1; EXISTING_ZONE_2; zone1; zone2; 
 		zone3; zone4
- zone:	NWTEST01_P0_DD9300_P1	
-		NWTEST01_P0; DD9300_P1
- zone:	NWTEST01_P2_DD9300_P1	
-		NWTEST01_P2; DD9300_P1
+ zone:	EXISTING_ZONE_1	
+		EXISTING_HOST_P0; EXISTING_STORAGE_P1
+ zone:	EXISTING_ZONE_2	
+		EXISTING_HOST_P2; EXISTING_STORAGE_P1
  zone:	zone1	TEST_s3p2_P8; SPA
  zone:	zone2	TEST_s3p2_P8; SPB
  zone:	zone3	TEST_s6p2_P9; SPA
  zone:	zone4	TEST_s6p2_P9; SPB
- alias:	DD9300_P1	
+ alias:	EXISTING_STORAGE_P1	
 		1,1
- alias:	NWTEST01_P0	
+ alias:	EXISTING_HOST_P0	
 		1,0
- alias:	NWTEST01_P2	
+ alias:	EXISTING_HOST_P2	
 		1,2
- alias:	SPA	50:06:01:64:49:e0:6f:d1
- alias:	SPB	50:06:01:6c:49:e0:6f:d1
+ alias:	SPA	xx:xx:xx:xx:xx:xx:xx:03
+ alias:	SPB	xx:xx:xx:xx:xx:xx:xx:04
  alias:	TEST_s3p2_P8	
-		21:00:00:24:ff:3f:5f:42
+		xx:xx:xx:xx:xx:xx:xx:01
  alias:	TEST_s6p2_P9	
-		21:00:00:24:ff:3f:5f:55
+		xx:xx:xx:xx:xx:xx:xx:02
 
 Effective configuration:
- cfg:	OPW	
- zone:	NWTEST01_P0_DD9300_P1	
+ cfg:	TEST_CFG	
+ zone:	EXISTING_ZONE_1	
 		1,0
 		1,1
- zone:	NWTEST01_P2_DD9300_P1	
+ zone:	EXISTING_ZONE_2	
 		1,2
 		1,1
- zone:	zone1	21:00:00:24:ff:3f:5f:42
-		50:06:01:64:49:e0:6f:d1
- zone:	zone2	21:00:00:24:ff:3f:5f:42
-		50:06:01:6c:49:e0:6f:d1
- zone:	zone3	21:00:00:24:ff:3f:5f:55
-		50:06:01:64:49:e0:6f:d1
- zone:	zone4	21:00:00:24:ff:3f:5f:55
-		50:06:01:6c:49:e0:6f:d1
+ zone:	zone1	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone2	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:04
+ zone:	zone3	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone4	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:04
 		
 		
-OPW_Test_SAN:admin> switchshow
-switchName:	OPW_Test_SAN
+TEST_SAN:admin> switchshow
+switchName:	TEST_SAN
 switchType:	118.1
 switchState:	Online   
 switchMode:	Native
 switchRole:	Principal
 switchDomain:	1
 switchId:	fffc01
-switchWwn:	10:00:50:eb:1a:9c:a6:8c
-zoning:		ON (OPW)
+switchWwn:	xx:xx:xx:xx:xx:xx:xx:05
+zoning:		ON (TEST_CFG)
 switchBeacon:	OFF
 
 Index Port Address Media Speed       State   Proto
 ==================================================
-   0   0   010000   id    N8	   Online      FC  F-Port  10:00:00:10:9b:f8:21:46 
-   1   1   010100   id    N8	   Online      FC  F-Port  50:02:18:85:0a:20:13:9d 
-   2   2   010200   id    N8	   Online      FC  F-Port  10:00:00:10:9b:f8:21:45 
+   0   0   010000   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:06 
+   1   1   010100   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:07 
+   2   2   010200   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:08 
    3   3   010300   id    N8	   No_Light    FC  
    4   4   010400   id    N8	   No_Light    FC  
    5   5   010500   id    N8	   No_Light    FC  
    6   6   010600   id    N8	   No_Light    FC  
    7   7   010700   id    N8	   No_Light    FC  
-   8   8   010800   id    N8	   Online      FC  F-Port  21:00:00:24:ff:3f:5f:42 
-   9   9   010900   id    N8	   Online      FC  F-Port  21:00:00:24:ff:3f:5f:55 
+   8   8   010800   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:01 
+   9   9   010900   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:02 
   10  10   010a00   id    N8	   No_Light    FC  
   11  11   010b00   id    N8	   No_Light    FC  
-  12  12   010c00   id    N8	   Online      FC  F-Port  50:06:01:64:49:e0:6f:d1 
-  13  13   010d00   id    N8	   Online      FC  F-Port  50:06:01:6c:49:e0:6f:d1 
+  12  12   010c00   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:03 
+  13  13   010d00   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:04 
   14  14   010e00   id    N8	   No_Light    FC  
   15  15   010f00   id    N8	   No_Light    FC  
   16  16   011000   id    N8	   No_Light    FC  
@@ -326,10 +326,10 @@ Index Port Address Media Speed       State   Proto
 
 | 스위치 포트 | 연결 장비 | WWPN | 상태 |
 |---|---|---|---|
-| 8 | R750 HBA 포트 1 | `21:00:00:24:ff:3f:5f:42` | Online, F-Port, 8Gb |
-| 9 | R750 HBA 포트 2 | `21:00:00:24:ff:3f:5f:55` | Online, F-Port, 8Gb |
-| 12 | Unity SPA 포트 0 | `50:06:01:64:49:e0:6f:d1` | Online, F-Port, 8Gb |
-| 13 | Unity SPB 포트 0 | `50:06:01:6c:49:e0:6f:d1` | Online, F-Port, 8Gb |
+| 8 | R750 HBA 포트 1 | `xx:xx:xx:xx:xx:xx:xx:01` | Online, F-Port, 8Gb |
+| 9 | R750 HBA 포트 2 | `xx:xx:xx:xx:xx:xx:xx:02` | Online, F-Port, 8Gb |
+| 12 | Unity SPA 포트 0 | `xx:xx:xx:xx:xx:xx:xx:03` | Online, F-Port, 8Gb |
+| 13 | Unity SPB 포트 0 | `xx:xx:xx:xx:xx:xx:xx:04` | Online, F-Port, 8Gb |
 
 - 현재 상태는 HBA와 Storage의 1:2 WWN 조닝 관계다.
 - 이걸 우선 1:1 WWN 조닝으로 변경
@@ -342,243 +342,243 @@ Index Port Address Media Speed       State   Proto
 
 ```
 
-1. config에서 zone1~4 삭제 (cfgremove "OPW", "zone1;zone2;zone3;zone4")
+1. config에서 zone1~4 삭제 (cfgremove "TEST_CFG", "zone1;zone2;zone3;zone4")
 
-OPW_Test_SAN:admin> cfgremove "OPW", "zone1;zone2;zone3;zone4"
-OPW_Test_SAN:admin> cfgshow
+TEST_SAN:admin> cfgremove "TEST_CFG", "zone1;zone2;zone3;zone4"
+TEST_SAN:admin> cfgshow
 Defined configuration:
- cfg:	OPW	NWTEST01_P0_DD9300_P1; NWTEST01_P2_DD9300_P1
+ cfg:	TEST_CFG	EXISTING_ZONE_1; EXISTING_ZONE_2
  
 -> zone1~4 cfg에서 빠진 것 확인 가능
 
 2. 기존 Zone 삭제 (zonedelete)
 
-OPW_Test_SAN:admin> zonedelete "zone1"
-OPW_Test_SAN:admin> zonedelete "zone2"
-OPW_Test_SAN:admin> zonedelete "zone3"
-OPW_Test_SAN:admin> zonedelete "zone4"
-OPW_Test_SAN:admin> cfgshow
+TEST_SAN:admin> zonedelete "zone1"
+TEST_SAN:admin> zonedelete "zone2"
+TEST_SAN:admin> zonedelete "zone3"
+TEST_SAN:admin> zonedelete "zone4"
+TEST_SAN:admin> cfgshow
 Defined configuration:
- cfg:	OPW	NWTEST01_P0_DD9300_P1; NWTEST01_P2_DD9300_P1
- zone:	NWTEST01_P0_DD9300_P1	
-		NWTEST01_P0; DD9300_P1
- zone:	NWTEST01_P2_DD9300_P1	
-		NWTEST01_P2; DD9300_P1
- alias:	DD9300_P1	
+ cfg:	TEST_CFG	EXISTING_ZONE_1; EXISTING_ZONE_2
+ zone:	EXISTING_ZONE_1	
+		EXISTING_HOST_P0; EXISTING_STORAGE_P1
+ zone:	EXISTING_ZONE_2	
+		EXISTING_HOST_P2; EXISTING_STORAGE_P1
+ alias:	EXISTING_STORAGE_P1	
 		1,1
- alias:	NWTEST01_P0	
+ alias:	EXISTING_HOST_P0	
 		1,0
- alias:	NWTEST01_P2	
+ alias:	EXISTING_HOST_P2	
 		1,2
- alias:	SPA	50:06:01:64:49:e0:6f:d1
- alias:	SPB	50:06:01:6c:49:e0:6f:d1
+ alias:	SPA	xx:xx:xx:xx:xx:xx:xx:03
+ alias:	SPB	xx:xx:xx:xx:xx:xx:xx:04
  alias:	TEST_s3p2_P8	
-		21:00:00:24:ff:3f:5f:42
+		xx:xx:xx:xx:xx:xx:xx:01
  alias:	TEST_s6p2_P9	
-		21:00:00:24:ff:3f:5f:55
+		xx:xx:xx:xx:xx:xx:xx:02
 
 Effective configuration:
- cfg:	OPW	
- zone:	NWTEST01_P0_DD9300_P1	
+ cfg:	TEST_CFG	
+ zone:	EXISTING_ZONE_1	
 		1,0
 		1,1
- zone:	NWTEST01_P2_DD9300_P1	
+ zone:	EXISTING_ZONE_2	
 		1,2
 		1,1
- zone:	zone1	21:00:00:24:ff:3f:5f:42
-		50:06:01:64:49:e0:6f:d1
- zone:	zone2	21:00:00:24:ff:3f:5f:42
-		50:06:01:6c:49:e0:6f:d1
- zone:	zone3	21:00:00:24:ff:3f:5f:55
-		50:06:01:64:49:e0:6f:d1
- zone:	zone4	21:00:00:24:ff:3f:5f:55
-		50:06:01:6c:49:e0:6f:d1 
+ zone:	zone1	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone2	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:04
+ zone:	zone3	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone4	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:04 
 		
 -> zone 1~4 삭제 확인 가능
 
 3. Alias 삭제 (alidelete)
 
-OPW_Test_SAN:admin> alidelete "TEST_s3p2_P8"
-OPW_Test_SAN:admin> alidelete "TEST_s6p2_P9"
-OPW_Test_SAN:admin> alidelete "SPA"
-OPW_Test_SAN:admin> alidelete "SPB"
-OPW_Test_SAN:admin> cfgshow
+TEST_SAN:admin> alidelete "TEST_s3p2_P8"
+TEST_SAN:admin> alidelete "TEST_s6p2_P9"
+TEST_SAN:admin> alidelete "SPA"
+TEST_SAN:admin> alidelete "SPB"
+TEST_SAN:admin> cfgshow
 Defined configuration:
- cfg:	OPW	NWTEST01_P0_DD9300_P1; NWTEST01_P2_DD9300_P1
- zone:	NWTEST01_P0_DD9300_P1	
-		NWTEST01_P0; DD9300_P1
- zone:	NWTEST01_P2_DD9300_P1	
-		NWTEST01_P2; DD9300_P1
- alias:	DD9300_P1	
+ cfg:	TEST_CFG	EXISTING_ZONE_1; EXISTING_ZONE_2
+ zone:	EXISTING_ZONE_1	
+		EXISTING_HOST_P0; EXISTING_STORAGE_P1
+ zone:	EXISTING_ZONE_2	
+		EXISTING_HOST_P2; EXISTING_STORAGE_P1
+ alias:	EXISTING_STORAGE_P1	
 		1,1
- alias:	NWTEST01_P0	
+ alias:	EXISTING_HOST_P0	
 		1,0
- alias:	NWTEST01_P2	
+ alias:	EXISTING_HOST_P2	
 		1,2
 
 Effective configuration:
- cfg:	OPW	
- zone:	NWTEST01_P0_DD9300_P1	
+ cfg:	TEST_CFG	
+ zone:	EXISTING_ZONE_1	
 		1,0
 		1,1
- zone:	NWTEST01_P2_DD9300_P1	
+ zone:	EXISTING_ZONE_2	
 		1,2
 		1,1
- zone:	zone1	21:00:00:24:ff:3f:5f:42
-		50:06:01:64:49:e0:6f:d1
- zone:	zone2	21:00:00:24:ff:3f:5f:42
-		50:06:01:6c:49:e0:6f:d1
- zone:	zone3	21:00:00:24:ff:3f:5f:55
-		50:06:01:64:49:e0:6f:d1
- zone:	zone4	21:00:00:24:ff:3f:5f:55
-		50:06:01:6c:49:e0:6f:d1
+ zone:	zone1	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone2	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:04
+ zone:	zone3	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone4	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:04
 
 -> alias 삭제 확인 가능
 
 4. 새 Alias 생성
 
-OPW_Test_SAN:admin> alicreate "TEST_HBA1", "21:00:00:24:ff:3f:5f:42"
-OPW_Test_SAN:admin> alicreate "TEST_HBA2", "21:00:00:24:ff:3f:5f:55"
-OPW_Test_SAN:admin> alicreate "UNITY_SPA0", "50:06:01:64:49:e0:6f:d1"
-OPW_Test_SAN:admin> alicreate "UNITY_SPB0", "50:06:01:6c:49:e0:6f:d1"
-OPW_Test_SAN:admin> alishow
+TEST_SAN:admin> alicreate "TEST_HBA1", "xx:xx:xx:xx:xx:xx:xx:01"
+TEST_SAN:admin> alicreate "TEST_HBA2", "xx:xx:xx:xx:xx:xx:xx:02"
+TEST_SAN:admin> alicreate "UNITY_SPA0", "xx:xx:xx:xx:xx:xx:xx:03"
+TEST_SAN:admin> alicreate "UNITY_SPB0", "xx:xx:xx:xx:xx:xx:xx:04"
+TEST_SAN:admin> alishow
 Defined configuration:
- cfg:	OPW	NWTEST01_P0_DD9300_P1; NWTEST01_P2_DD9300_P1
- zone:	NWTEST01_P0_DD9300_P1	
-		NWTEST01_P0; DD9300_P1
- zone:	NWTEST01_P2_DD9300_P1	
-		NWTEST01_P2; DD9300_P1
- alias:	DD9300_P1	
+ cfg:	TEST_CFG	EXISTING_ZONE_1; EXISTING_ZONE_2
+ zone:	EXISTING_ZONE_1	
+		EXISTING_HOST_P0; EXISTING_STORAGE_P1
+ zone:	EXISTING_ZONE_2	
+		EXISTING_HOST_P2; EXISTING_STORAGE_P1
+ alias:	EXISTING_STORAGE_P1	
 		1,1
- alias:	NWTEST01_P0	
+ alias:	EXISTING_HOST_P0	
 		1,0
- alias:	NWTEST01_P2	
+ alias:	EXISTING_HOST_P2	
 		1,2
  alias:	TEST_HBA1	
-		21:00:00:24:ff:3f:5f:42
+		xx:xx:xx:xx:xx:xx:xx:01
  alias:	TEST_HBA2	
-		21:00:00:24:ff:3f:5f:55
+		xx:xx:xx:xx:xx:xx:xx:02
  alias:	UNITY_SPA0	
-		50:06:01:64:49:e0:6f:d1
+		xx:xx:xx:xx:xx:xx:xx:03
  alias:	UNITY_SPB0	
-		50:06:01:6c:49:e0:6f:d1
+		xx:xx:xx:xx:xx:xx:xx:04
 
 Effective configuration:
- cfg:	OPW	
- zone:	NWTEST01_P0_DD9300_P1	
+ cfg:	TEST_CFG	
+ zone:	EXISTING_ZONE_1	
 		1,0
 		1,1
- zone:	NWTEST01_P2_DD9300_P1	
+ zone:	EXISTING_ZONE_2	
 		1,2
 		1,1
- zone:	zone1	21:00:00:24:ff:3f:5f:42
-		50:06:01:64:49:e0:6f:d1
- zone:	zone2	21:00:00:24:ff:3f:5f:42
-		50:06:01:6c:49:e0:6f:d1
- zone:	zone3	21:00:00:24:ff:3f:5f:55
-		50:06:01:64:49:e0:6f:d1
- zone:	zone4	21:00:00:24:ff:3f:5f:55
-		50:06:01:6c:49:e0:6f:d1
+ zone:	zone1	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone2	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:04
+ zone:	zone3	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone4	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:04
 		
 -> 새 alias 생성 확인 가능(TEST_HBA1, TEST_HBA2, UNITY_SPA0, UNITY_SPB0)
 
 5. 1:1 Zone 2개 생성 (zone create)
 
-OPW_Test_SAN:admin> zonecreate "Z_TEST_HBA1_UNITY_SPA0", "TEST_HBA1;UNITY_SPA0"
-OPW_Test_SAN:admin> zonecreate "Z_TEST_HBA2_UNITY_SPB0", "TEST_HBA2;UNITY_SPB0"
-OPW_Test_SAN:admin> zoneshow
+TEST_SAN:admin> zonecreate "Z_TEST_HBA1_UNITY_SPA0", "TEST_HBA1;UNITY_SPA0"
+TEST_SAN:admin> zonecreate "Z_TEST_HBA2_UNITY_SPB0", "TEST_HBA2;UNITY_SPB0"
+TEST_SAN:admin> zoneshow
 Defined configuration:
- cfg:	OPW	NWTEST01_P0_DD9300_P1; NWTEST01_P2_DD9300_P1
- zone:	NWTEST01_P0_DD9300_P1	
-		NWTEST01_P0; DD9300_P1
- zone:	NWTEST01_P2_DD9300_P1	
-		NWTEST01_P2; DD9300_P1
+ cfg:	TEST_CFG	EXISTING_ZONE_1; EXISTING_ZONE_2
+ zone:	EXISTING_ZONE_1	
+		EXISTING_HOST_P0; EXISTING_STORAGE_P1
+ zone:	EXISTING_ZONE_2	
+		EXISTING_HOST_P2; EXISTING_STORAGE_P1
  zone:	Z_TEST_HBA1_UNITY_SPA0	
 		TEST_HBA1; UNITY_SPA0
  zone:	Z_TEST_HBA2_UNITY_SPB0	
 		TEST_HBA2; UNITY_SPB0
- alias:	DD9300_P1	
+ alias:	EXISTING_STORAGE_P1	
 		1,1
- alias:	NWTEST01_P0	
+ alias:	EXISTING_HOST_P0	
 		1,0
- alias:	NWTEST01_P2	
+ alias:	EXISTING_HOST_P2	
 		1,2
  alias:	TEST_HBA1	
-		21:00:00:24:ff:3f:5f:42
+		xx:xx:xx:xx:xx:xx:xx:01
  alias:	TEST_HBA2	
-		21:00:00:24:ff:3f:5f:55
+		xx:xx:xx:xx:xx:xx:xx:02
  alias:	UNITY_SPA0	
-		50:06:01:64:49:e0:6f:d1
+		xx:xx:xx:xx:xx:xx:xx:03
  alias:	UNITY_SPB0	
-		50:06:01:6c:49:e0:6f:d1
+		xx:xx:xx:xx:xx:xx:xx:04
 
 Effective configuration:
- cfg:	OPW	
- zone:	NWTEST01_P0_DD9300_P1	
+ cfg:	TEST_CFG	
+ zone:	EXISTING_ZONE_1	
 		1,0
 		1,1
- zone:	NWTEST01_P2_DD9300_P1	
+ zone:	EXISTING_ZONE_2	
 		1,2
 		1,1
- zone:	zone1	21:00:00:24:ff:3f:5f:42
-		50:06:01:64:49:e0:6f:d1
- zone:	zone2	21:00:00:24:ff:3f:5f:42
-		50:06:01:6c:49:e0:6f:d1
- zone:	zone3	21:00:00:24:ff:3f:5f:55
-		50:06:01:64:49:e0:6f:d1
- zone:	zone4	21:00:00:24:ff:3f:5f:55
-		50:06:01:6c:49:e0:6f:d1
+ zone:	zone1	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone2	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:04
+ zone:	zone3	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone4	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:04
 		
 -> zone 생성 확인 가능
 
-6. 기존 OPW Config에 새 Zone 추가 (cfgadd)
+6. 기존 TEST_CFG Config에 새 Zone 추가 (cfgadd)
 
-OPW_Test_SAN:admin> cfgadd "OPW", "Z_TEST_HBA1_UNITY_SPA0;Z_TEST_HBA2_UNITY_SPB0"
-OPW_Test_SAN:admin> cfgshow
+TEST_SAN:admin> cfgadd "TEST_CFG", "Z_TEST_HBA1_UNITY_SPA0;Z_TEST_HBA2_UNITY_SPB0"
+TEST_SAN:admin> cfgshow
 Defined configuration:
- cfg:	OPW	NWTEST01_P0_DD9300_P1; NWTEST01_P2_DD9300_P1; 
+ cfg:	TEST_CFG	EXISTING_ZONE_1; EXISTING_ZONE_2; 
 		Z_TEST_HBA1_UNITY_SPA0; Z_TEST_HBA2_UNITY_SPB0
- zone:	NWTEST01_P0_DD9300_P1	
-		NWTEST01_P0; DD9300_P1
- zone:	NWTEST01_P2_DD9300_P1	
-		NWTEST01_P2; DD9300_P1
+ zone:	EXISTING_ZONE_1	
+		EXISTING_HOST_P0; EXISTING_STORAGE_P1
+ zone:	EXISTING_ZONE_2	
+		EXISTING_HOST_P2; EXISTING_STORAGE_P1
  zone:	Z_TEST_HBA1_UNITY_SPA0	
 		TEST_HBA1; UNITY_SPA0
  zone:	Z_TEST_HBA2_UNITY_SPB0	
 		TEST_HBA2; UNITY_SPB0
- alias:	DD9300_P1	
+ alias:	EXISTING_STORAGE_P1	
 		1,1
- alias:	NWTEST01_P0	
+ alias:	EXISTING_HOST_P0	
 		1,0
- alias:	NWTEST01_P2	
+ alias:	EXISTING_HOST_P2	
 		1,2
  alias:	TEST_HBA1	
-		21:00:00:24:ff:3f:5f:42
+		xx:xx:xx:xx:xx:xx:xx:01
  alias:	TEST_HBA2	
-		21:00:00:24:ff:3f:5f:55
+		xx:xx:xx:xx:xx:xx:xx:02
  alias:	UNITY_SPA0	
-		50:06:01:64:49:e0:6f:d1
+		xx:xx:xx:xx:xx:xx:xx:03
  alias:	UNITY_SPB0	
-		50:06:01:6c:49:e0:6f:d1
+		xx:xx:xx:xx:xx:xx:xx:04
 
 Effective configuration:
- cfg:	OPW	
- zone:	NWTEST01_P0_DD9300_P1	
+ cfg:	TEST_CFG	
+ zone:	EXISTING_ZONE_1	
 		1,0
 		1,1
- zone:	NWTEST01_P2_DD9300_P1	
+ zone:	EXISTING_ZONE_2	
 		1,2
 		1,1
- zone:	zone1	21:00:00:24:ff:3f:5f:42
-		50:06:01:64:49:e0:6f:d1
- zone:	zone2	21:00:00:24:ff:3f:5f:42
-		50:06:01:6c:49:e0:6f:d1
- zone:	zone3	21:00:00:24:ff:3f:5f:55
-		50:06:01:64:49:e0:6f:d1
- zone:	zone4	21:00:00:24:ff:3f:5f:55
-		50:06:01:6c:49:e0:6f:d1
+ zone:	zone1	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone2	xx:xx:xx:xx:xx:xx:xx:01
+		xx:xx:xx:xx:xx:xx:xx:04
+ zone:	zone3	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:03
+ zone:	zone4	xx:xx:xx:xx:xx:xx:xx:02
+		xx:xx:xx:xx:xx:xx:xx:04
 		
--> OPW cfg에 새로 만든 zone 추가된 것 확인 가능
+-> TEST_CFG cfg에 새로 만든 zone 추가된 것 확인 가능
 
 7. 새 cfg 활성화 및 저장
 
@@ -1146,8 +1146,8 @@ Filesystem                     Size  Used Avail Use% Mounted on
 [root@node1 linux_x86_64]# scp \
 > lgtoclnt-19.10.0.4-1.x86_64.rpm \
 > lgtoxtdclnt-19.10.0.4-1.x86_64.rpm \
-> root@192.168.1.232:/tmp/networker-client-19.10/
-root@192.168.1.232's password: 
+> root@192.168.1.xxx:/tmp/networker-client-19.10/
+root@192.168.1.xxx's password: 
 lgtoclnt-19.10.0.4-1.x86_64.rpm                                       100%   62MB  88.1MB/s   00:00    
 lgtoxtdclnt-19.10.0.4-1.x86_64.rpm                                    100%   61MB  56.4MB/s   00:01    
 [root@node1 linux_x86_64]# 
@@ -1188,7 +1188,7 @@ root     19124  9420  0 14:10 pts/0    00:00:00 grep --color=auto nsr
 [root@TK_TEST networker-client-19.10]# 
 ```
 
-- 서버에 nwui 설치하고, 스크립트 실행 후 https://192.168.1.136:9090/nwui 접속
+- 서버에 nwui 설치하고, 스크립트 실행 후 https://192.168.1.xxx:9090/nwui 접속
 
 - 단계별로 백업서버 nwui에서 확인
 
@@ -1554,36 +1554,36 @@ size=100G features='1 queue_if_no_path' hwhandler='1 alua' wp=rw
 - switch 상태 다 Online
 
 ```
-OPW_Test_SAN:admin> switch show
+TEST_SAN:admin> switch show
 rbash: switch: command not found
-OPW_Test_SAN:admin> switchshow
-switchName:	OPW_Test_SAN
+TEST_SAN:admin> switchshow
+switchName:	TEST_SAN
 switchType:	118.1
 switchState:	Online   
 switchMode:	Native
 switchRole:	Principal
 switchDomain:	1
 switchId:	fffc01
-switchWwn:	10:00:50:eb:1a:9c:a6:8c
-zoning:		ON (OPW)
+switchWwn:	xx:xx:xx:xx:xx:xx:xx:05
+zoning:		ON (TEST_CFG)
 switchBeacon:	OFF
 
 Index Port Address Media Speed       State   Proto
 ==================================================
-   0   0   010000   id    N8	   Online      FC  F-Port  10:00:00:10:9b:f8:21:46 
-   1   1   010100   id    N8	   Online      FC  F-Port  50:02:18:85:0a:20:13:9d 
-   2   2   010200   id    N8	   Online      FC  F-Port  10:00:00:10:9b:f8:21:45 
+   0   0   010000   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:06 
+   1   1   010100   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:07 
+   2   2   010200   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:08 
    3   3   010300   id    N8	   No_Light    FC  
    4   4   010400   id    N8	   No_Light    FC  
    5   5   010500   id    N8	   No_Light    FC  
    6   6   010600   id    N8	   No_Light    FC  
    7   7   010700   id    N8	   No_Light    FC  
-   8   8   010800   id    N8	   Online      FC  F-Port  21:00:00:24:ff:3f:5f:42 
-   9   9   010900   id    N8	   Online      FC  F-Port  21:00:00:24:ff:3f:5f:55 
+   8   8   010800   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:01 
+   9   9   010900   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:02 
   10  10   010a00   id    N8	   No_Light    FC  
   11  11   010b00   id    N8	   No_Light    FC  
-  12  12   010c00   id    N8	   Online      FC  F-Port  50:06:01:64:49:e0:6f:d1 
-  13  13   010d00   id    N8	   Online      FC  F-Port  50:06:01:6c:49:e0:6f:d1 
+  12  12   010c00   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:03 
+  13  13   010d00   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:04 
   14  14   010e00   id    N8	   No_Light    FC  
   15  15   010f00   id    N8	   No_Light    FC  
   16  16   011000   id    N8	   No_Light    FC  
@@ -1656,20 +1656,20 @@ size=100G features='1 queue_if_no_path' hwhandler='1 alua' wp=rw
 ```
 Index Port Address Media Speed       State   Proto
 ==================================================
-   0   0   010000   id    N8	   Online      FC  F-Port  10:00:00:10:9b:f8:21:46 
-   1   1   010100   id    N8	   Online      FC  F-Port  50:02:18:85:0a:20:13:9d 
-   2   2   010200   id    N8	   Online      FC  F-Port  10:00:00:10:9b:f8:21:45 
+   0   0   010000   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:06 
+   1   1   010100   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:07 
+   2   2   010200   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:08 
    3   3   010300   id    N8	   No_Light    FC  
    4   4   010400   id    N8	   No_Light    FC  
    5   5   010500   id    N8	   No_Light    FC  
    6   6   010600   id    N8	   No_Light    FC  
    7   7   010700   id    N8	   No_Light    FC  
-   8   8   010800   id    N8	   Online      FC  F-Port  21:00:00:24:ff:3f:5f:42 
+   8   8   010800   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:01 
    9   9   010900   id    N8	   No_Light    FC  
   10  10   010a00   id    N8	   No_Light    FC  
   11  11   010b00   id    N8	   No_Light    FC  
-  12  12   010c00   id    N8	   Online      FC  F-Port  50:06:01:64:49:e0:6f:d1 
-  13  13   010d00   id    N8	   Online      FC  F-Port  50:06:01:6c:49:e0:6f:d1 
+  12  12   010c00   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:03 
+  13  13   010d00   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:04 
   14  14   010e00   id    N8	   No_Light    FC  
   15  15   010f00   id    N8	   No_Light    FC  
   16  16   011000   id    N8	   No_Light    FC  
@@ -1768,20 +1768,20 @@ size=100G features='1 queue_if_no_path' hwhandler='1 alua' wp=rw
 ```
 Index Port Address Media Speed       State   Proto
 ==================================================
-   0   0   010000   id    N8	   Online      FC  F-Port  10:00:00:10:9b:f8:21:46 
-   1   1   010100   id    N8	   Online      FC  F-Port  50:02:18:85:0a:20:13:9d 
-   2   2   010200   id    N8	   Online      FC  F-Port  10:00:00:10:9b:f8:21:45 
+   0   0   010000   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:06 
+   1   1   010100   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:07 
+   2   2   010200   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:08 
    3   3   010300   id    N8	   No_Light    FC  
    4   4   010400   id    N8	   No_Light    FC  
    5   5   010500   id    N8	   No_Light    FC  
    6   6   010600   id    N8	   No_Light    FC  
    7   7   010700   id    N8	   No_Light    FC  
-   8   8   010800   id    N8	   Online      FC  F-Port  21:00:00:24:ff:3f:5f:42 
-   9   9   010900   id    N8	   Online      FC  F-Port  21:00:00:24:ff:3f:5f:55 
+   8   8   010800   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:01 
+   9   9   010900   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:02 
   10  10   010a00   id    N8	   No_Light    FC  
   11  11   010b00   id    N8	   No_Light    FC  
-  12  12   010c00   id    N8	   Online      FC  F-Port  50:06:01:64:49:e0:6f:d1 
-  13  13   010d00   id    N8	   Online      FC  F-Port  50:06:01:6c:49:e0:6f:d1 
+  12  12   010c00   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:03 
+  13  13   010d00   id    N8	   Online      FC  F-Port  xx:xx:xx:xx:xx:xx:xx:04 
   14  14   010e00   id    N8	   No_Light    FC  
   15  15   010f00   id    N8	   No_Light    FC  
   16  16   011000   id    N8	   No_Light    FC  
@@ -1810,12 +1810,12 @@ Index Port Address Media Speed       State   Proto
 - 생성된 NFS Server로 ping 확인
 
 ```
-[root@TK_TEST ~]# ping -c 3 192.168.1.233
-PING 192.168.1.233 (192.168.1.233) 56(84) bytes of data.
-64 bytes from 192.168.1.233: icmp_seq=1 ttl=64 time=0.239 ms
-64 bytes from 192.168.1.233: icmp_seq=2 ttl=64 time=0.125 ms
+[root@TK_TEST ~]# ping -c 3 192.168.1.xxx
+PING 192.168.1.xxx (192.168.1.xxx) 56(84) bytes of data.
+64 bytes from 192.168.1.xxx: icmp_seq=1 ttl=64 time=0.239 ms
+64 bytes from 192.168.1.xxx: icmp_seq=2 ttl=64 time=0.125 ms
 ^C
---- 192.168.1.233 ping statistics ---
+--- 192.168.1.xxx ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1054ms
 rtt min/avg/max/mdev = 0.125/0.182/0.239/0.057 ms
 ```
@@ -1827,12 +1827,12 @@ rtt min/avg/max/mdev = 0.125/0.182/0.239/0.057 ms
 
 - 공유 목록 확인
   - nfs-utils 설치
-  - 공유 목록 확인 (showmount -e 192.168.1.233)
+  - 공유 목록 확인 (showmount -e 192.168.1.xxx)
   - 둘 다 같은 파일시스템 및 같은 데이터 가리킨다. 파일 시스템 이름이나 share export 경로 둘 다 나오는 것
 
 ```
-[root@TK_TEST ~]# showmount -e 192.168.1.233
-Export list for 192.168.1.233:
+[root@TK_TEST ~]# showmount -e 192.168.1.xxx
+Export list for 192.168.1.xxx:
 /PJH_FILE_TEST (everyone)
 /pjh-nfs-test  (everyone)
 ```
@@ -1843,14 +1843,14 @@ Export list for 192.168.1.233:
 [root@TK_TEST ~]# mkdir -p /mnt/unity-nfs-test
 [root@TK_TEST ~]# mount -t nfs \
 > -o vers=3,rw \
-> 192.168.1.233:/pjh-nfs-test \
+> 192.168.1.xxx:/pjh-nfs-test \
 > /mnt/unity-nfs-test/
 [root@TK_TEST ~]# findmnt /mnt/unity-nfs-test
 TARGET              SOURCE                      FSTYPE OPTIONS
-/mnt/unity-nfs-test 192.168.1.233:/pjh-nfs-test nfs    rw,relatime,vers=3,rsize=131072,wsize=131072,naml
+/mnt/unity-nfs-test 192.168.1.xxx:/pjh-nfs-test nfs    rw,relatime,vers=3,rsize=131072,wsize=131072,naml
 [root@TK_TEST ~]# df -h /mnt/unity-nfs-test/
 Filesystem                   Size  Used Avail Use% Mounted on
-192.168.1.233:/pjh-nfs-test   10G  1.6G  8.5G  16% /mnt/unity-nfs-test
+192.168.1.xxx:/pjh-nfs-test   10G  1.6G  8.5G  16% /mnt/unity-nfs-test
 ```
 
 - 파일 r,w 테스트 (허가 거부 문제 발생)
@@ -1870,14 +1870,14 @@ Unity NFS test 2026. 09. 23. (수) 16:13:16 KST
 ```
 
 - 호스트 제한해보기
-  - host access에서 read/write, 192.168.1.232 클라이언트만 read/write, allow root로 추가
+  - host access에서 read/write, 192.168.1.xxx 클라이언트만 read/write, allow root로 추가
   - 설정한 호스트에서만 접근 가능
 
 ```
-[root@TK_TEST unity-nfs-test]# showmount -e 192.168.1.233
-Export list for 192.168.1.233:
-/PJH_FILE_TEST 192.168.1.232/255.255.255.255
-/pjh-nfs-test  192.168.1.232/255.255.255.255
+[root@TK_TEST unity-nfs-test]# showmount -e 192.168.1.xxx
+Export list for 192.168.1.xxx:
+/PJH_FILE_TEST 192.168.1.xxx/255.255.255.255
+/pjh-nfs-test  192.168.1.xxx/255.255.255.255
 [root@TK_TEST unity-nfs-test]# 
 ```
 
@@ -1993,7 +1993,7 @@ ae61e8f8b010  quay.io/prometheus/node-exporter:latest              --path.rootfs
 | `:9100` | Node Exporter의 기본 포트 |
 
 - 모니터링 VM에서 연결 확인 
-  - curl -s http://192.168.1.232:9100/metrics | head
+  - curl -s http://192.168.1.xxx:9100/metrics | head
 
 - Prometheus 설정 파일 생성
 
@@ -2013,7 +2013,7 @@ scrape_configs:
   - job_name: "r750-node"
     static_configs:
       - targets:
-          - "192.168.1.232:9100"
+          - "192.168.1.xxx:9100"
         labels:
           server: "TK_TEST"
 EOF
@@ -2154,10 +2154,10 @@ TARGET           SOURCE                        FSTYPE OPTIONS
 ```
 [root@TK_TEST ~]# findmnt /mnt/story-media-nfs 
 TARGET               SOURCE                      FSTYPE OPTIONS
-/mnt/story-media-nfs 192.168.1.233:/pjh-nfs-test nfs    rw,relatime,vers=3,rsize=13107
+/mnt/story-media-nfs 192.168.1.xxx:/pjh-nfs-test nfs    rw,relatime,vers=3,rsize=13107
 [root@TK_TEST ~]# df -h /mnt/story-media-nfs/
 Filesystem                   Size  Used Avail Use% Mounted on
-192.168.1.233:/pjh-nfs-test   10G  1.6G  8.5G  16% /mnt/story-media-nfs
+192.168.1.xxx:/pjh-nfs-test   10G  1.6G  8.5G  16% /mnt/story-media-nfs
 ```
 
 - 쓰기 권한 확인
@@ -2214,7 +2214,7 @@ Filesystem                   Size  Used Avail Use% Mounted on
 ```
 기존 /srv/story/media 주석 처리 후
 
-192.168.1.233:/PJH_FILE_TEST /srv/story/media nfs rw,vers=3,proto=tcp,hard,_netdev,x-systemd.automount,x-systemd.mount-timeout=30 0 0
+192.168.1.xxx:/PJH_FILE_TEST /srv/story/media nfs rw,vers=3,proto=tcp,hard,_netdev,x-systemd.automount,x-systemd.mount-timeout=30 0 0
 ```
 
 | 옵션 | 의미 |
@@ -2242,7 +2242,7 @@ Filesystem                   Size  Used Avail Use% Mounted on
 [root@TK_TEST ~]# mount /srv/story/media/
 [root@TK_TEST ~]# findmnt -T /srv/story/media 
 TARGET           SOURCE                      FSTYPE OPTIONS
-/srv/story/media 192.168.1.233:/pjh-nfs-test nfs    rw,relatime,vers=3,rsize=131072,ws
+/srv/story/media 192.168.1.xxx:/pjh-nfs-test nfs    rw,relatime,vers=3,rsize=131072,ws
 [root@TK_TEST ~]# ls -la /srv/story/media/
 합계 24
 drwxr-xr-x 10 root root 8192  9월 22 16:42 .
@@ -2257,7 +2257,7 @@ drwxr-xr-x  2 root root  152  9월 22 16:42 multipath-test-20260922_164222
 -rw-r--r--  1 root root   48  9월 23 16:05 test.txt
 [root@TK_TEST ~]# df -hT /srv/story/media/
 Filesystem                  Type  Size  Used Avail Use% Mounted on
-192.168.1.233:/pjh-nfs-test nfs    10G  1.6G  8.5G  16% /srv/story/media
+192.168.1.xxx:/pjh-nfs-test nfs    10G  1.6G  8.5G  16% /srv/story/media
 ```
 
 
@@ -2281,3 +2281,5 @@ Filesystem                  Type  Size  Used Avail Use% Mounted on
 - Podman CNI DNS 플러그인 부재로 발생한 컨테이너 이름 해석 문제 해결
 - NetWorker 복원 파일의 SHA-256 무결성 검증
 - MySQL Dump 복구 후 테이블 건수 검증
+
+> 본 실습은 테스트 환경에서 보안을 유지하며 진행했습니다.
